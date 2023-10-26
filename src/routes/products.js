@@ -5,28 +5,28 @@ const { validateProduct } = require("../utils.js/validations");
 
 router.get("/", async (req, res) => {
   try {
-    // Parámetros de consulta
+   
     const { limit = 10, page = 1, sort, query } = req.query;
     const limitInt = parseInt(limit);
     const pageInt = parseInt(page);
 
-    // Construir el objeto de opciones para la consulta
+    
     const options = {
       skip: (pageInt - 1) * limitInt,
       limit: limitInt,
       sort: sort === 'desc' ? { _id: -1 } : sort === 'asc' ? { _id: 1 } : null,
     };
 
-    // Construir el objeto de filtro basado en la consulta (si se proporciona)
+    
     const filter = query ? { $text: { $search: query } } : {};
 
-    // Realizar la consulta a la base de datos
+    
     const products = await productsModel.find(filter, null, options);
 
-    // Obtener el total de productos sin paginación
+   
     const totalProducts = await productsModel.countDocuments(filter);
 
-    // Construir la respuesta con información de paginación
+    
     const response = {
       status: 'success',
       payload: products,
